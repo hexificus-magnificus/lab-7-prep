@@ -1,4 +1,4 @@
-2a. 
-2b. 
-2c. 
-2d. 
+2a. it expands into arg1, arg2, ..., argN with each arg having the same type as when they were passed (restoring reference types and const)
+2b. compiler error. f must be called f(args...), and f(args...) + 1 returns a single value which cannot be unpacked
+2c. std::tuple<Arg1, Arg2, ..., ArgN>
+2d. compiler error, a vector must be created with std::vector<Args...> and cannot be unpacked

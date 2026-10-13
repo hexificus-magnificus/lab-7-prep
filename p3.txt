@@ -1,7 +1,37 @@
 Hash table:
+Space efficient since using a vector, though will likely have to reallocate if
+there isn't a good estimate of N at init. Accesses and add/remove are O(1) so 
+long as the table is large enough, so again a good estimate of N is required at
+init. Choosing a larger N, however, spreads out each entry in memory, reducing
+locality. If implemented as a vector of linked lists, though, locality is
+already shot. Space increases less than linearly with K*N since not every 
+object has every component. Constant overhead is reasonable but may depend
+on the hash function. Adding a new type of component is easy since it only
+creates a new empty table, and by that point there is likely a better estimate
+of required buckets. Accessing all of an entity's components requires accessing
+each table, meaning poor locality and O(K) iteration.
 
 Map:
+Again, doesn't waste space on unused components. Even better for space than the
+hash table since it doesn't hold empty hash buckets, and locality can be improved
+depending on the implementation of the underlying tree. Access time is O(log n),
+along with add/remove, which is ok. For many games, this will overwhelm most
+constant overhead. An empty map is easy to create, so adding a new component type
+at runtime doesn't cost much. Accessing all of an entity's components requires
+accessing each map, meaning poor locality and O(KlogN) iteration.
 
 Sparse mapping 1:
+Space inefficient since every entity has space for all components, and each
+array must be resized (O(N)) if a component is added/removed. May have good
+locality for small N however. Modifying and adding an entity is O(1), but removing
+requires shifting the whole vector which is O(N). Adding/removing components is
+slow because it must be done to every element of the vector. All of an entity's
+components are close together, and additional accesses can be done in O(1).
 
 Sparse mapping 2:
+Holds space for all components on every entity, which is larger than it needs
+to be. Adding/removing components are easier now since the mapping is stored
+component-first, but now removing an entity requires O(N*K) time which is very
+bad. Adding one is O(K), and modifying a component is O(1), but this gets slower
+if multiple components must be accessed. Better locality than the other sparse
+mapping since usually iteration is done over each component.
